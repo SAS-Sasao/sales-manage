@@ -1,6 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  currentPage?: string;
+  parentPage?: string;
+}
+
+const Header: React.FC<HeaderProps> = ({ currentPage, parentPage }) => {
   const currentDate = new Date().toLocaleDateString('ja-JP', {
     year: 'numeric',
     month: '2-digit',
@@ -32,8 +38,25 @@ const Header: React.FC = () => {
       </div>
       <div className="bg-blue-600 mt-2 py-1 px-4 flex items-center">
         <div className="flex items-center space-x-2">
-          <span className="text-white">🏠</span>
-          <span className="text-white">メニュー</span>
+          <Link to="/" className="text-white flex items-center hover:underline">
+            <span className="mr-1">🏠</span>
+            <span>メニュー</span>
+          </Link>
+          {parentPage && (
+            <>
+              <span className="text-white mx-2">＞</span>
+              <Link to="/master" className="text-white flex items-center hover:underline">
+                <span className="mr-1">🔧</span>
+                <span>{parentPage}</span>
+              </Link>
+            </>
+          )}
+          {currentPage && (
+            <>
+              <span className="text-white mx-2">＞</span>
+              <span className="text-white">{currentPage}</span>
+            </>
+          )}
         </div>
       </div>
     </header>

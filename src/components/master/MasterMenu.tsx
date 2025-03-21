@@ -21,15 +21,9 @@ const MasterMenu: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <Header />
+      <Header parentPage="マスタメンテ" />
       <main className="flex-grow overflow-auto">
         <div className="container mx-auto py-4">
-          <div className="flex items-center mb-4">
-            <Link to="/" className="text-blue-500 hover:text-blue-700 flex items-center">
-              <span className="mr-2">←</span>
-              <span>メインメニューに戻る</span>
-            </Link>
-          </div>
           <h2 className="text-xl font-bold mb-4">マスタメンテ</h2>
           <div className="grid grid-cols-2 gap-4 p-4 max-w-4xl mx-auto">
             {masterMenuItems.map((item) => (

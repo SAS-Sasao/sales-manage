@@ -5,15 +5,9 @@ import Header from '../layout/Header';
 const TaxMaster: React.FC = () => {
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <Header />
+      <Header parentPage="マスタメンテ" currentPage="税率マスタ" />
       <main className="flex-grow overflow-auto">
         <div className="container mx-auto py-4">
-          <div className="flex items-center mb-4">
-            <Link to="/master" className="text-blue-500 hover:text-blue-700 flex items-center">
-              <span className="mr-2">←</span>
-              <span>マスタメンテメニューに戻る</span>
-            </Link>
-          </div>
           <h2 className="text-xl font-bold mb-4">税率マスタ</h2>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <p className="text-gray-700">
