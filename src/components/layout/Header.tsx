@@ -19,20 +19,24 @@ const Header: React.FC<HeaderProps> = ({ currentPage, parentPage }) => {
     second: '2-digit',
   });
 
+  const handleLogout = () => {
+    alert('ログアウト処理は現在開発中です。');
+  };
+
   return (
     <header className="bg-indigo-700 text-white py-2">
       <div className="flex justify-between items-center px-4">
         <div className="flex items-center">
-          <h1 className="text-xl font-bold">メニュー（受入画面）</h1>
+          <h1 className="text-xl font-bold">ケミカル同仁基幹システム</h1>
         </div>
         <div className="flex items-center space-x-4 text-sm">
           <div>ユーザーID: SOWA/TE102</div>
-          <div>出勤日時: {currentDate} {currentTime}</div>
-          <button className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded">
+          <div>ログイン日時: {currentDate} {currentTime}</div>
+          <button 
+            className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded"
+            onClick={handleLogout}
+          >
             業務終了
-          </button>
-          <button className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded">
-            印刷システム
           </button>
         </div>
       </div>
