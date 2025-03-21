@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
 
 interface MenuItem {
   id: string;
@@ -11,6 +12,7 @@ interface MenuItem {
 
 const MenuGrid: React.FC = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const menuItems: MenuItem[] = [
     { id: 'function-select', title: '機能選択', icon: '📋' },
@@ -32,8 +34,11 @@ const MenuGrid: React.FC = () => {
     if (item.path) {
       navigate(item.path);
     } else if (item.isLogout) {
-      // ログアウト処理（将来的に実装）
-      alert('ログアウト処理は現在開発中です。');
+      // ログアウト処理
+      if (window.confirm('ログアウトしますか？')) {
+        logout();
+        navigate('/login');
+      }
     } else {
       // その他のメニュー項目のクリック処理（将来的に実装）
       alert(`${item.title}機能は現在開発中です。`);

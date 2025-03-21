@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
 
 interface HeaderProps {
   currentPage?: string;
@@ -7,6 +8,9 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ currentPage, parentPage }) => {
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
+  
   const currentDate = new Date().toLocaleDateString('ja-JP', {
     year: 'numeric',
     month: '2-digit',
@@ -20,7 +24,10 @@ const Header: React.FC<HeaderProps> = ({ currentPage, parentPage }) => {
   });
 
   const handleLogout = () => {
-    alert('ログアウト処理は現在開発中です。');
+    if (window.confirm('ログアウトしますか？')) {
+      logout();
+      navigate('/login');
+    }
   };
 
   return (
@@ -30,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, parentPage }) => {
           <h1 className="text-xl font-bold">ケミカル同仁基幹システム</h1>
         </div>
         <div className="flex items-center space-x-4 text-sm">
-          <div>ユーザーID: SOWA/TE102</div>
+          {currentUser && <div>ユーザーID: {currentUser.id}</div>}
           <div>ログイン日時: {currentDate} {currentTime}</div>
           <button 
             className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded"
