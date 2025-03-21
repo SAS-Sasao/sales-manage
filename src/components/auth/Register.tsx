@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../../api/auth';
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -8,15 +9,10 @@ const Register: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [newUserId, setNewUserId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // 仮のユーザーデータ（実際のアプリケーションではバックエンドから取得）
-  const dummyUsers = [
-    { id: '00001', email: 'user1@example.com', password: 'password1' },
-    { id: '00002', email: 'user2@example.com', password: 'password2' },
-  ];
-
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // 入力検証
@@ -25,36 +21,28 @@ const Register: React.FC = () => {
       return;
     }
     
-    // メールアドレスの重複チェック
-    if (dummyUsers.some(user => user.email === email)) {
-      setError('このメールアドレスは既に登録されています。');
-      return;
-    }
-    
-    // 新しいユーザーIDを生成（00001から開始）
-    const lastUserId = dummyUsers.length > 0 
-      ? Math.max(...dummyUsers.map(user => parseInt(user.id, 10)))
-      : 0;
-    
-    const newId = String(lastUserId + 1).padStart(5, '0');
-    setNewUserId(newId);
-    
-    // 新しいユーザーを作成（実際のアプリケーションではバックエンドに送信）
-    const newUser = {
-      id: newId,
-      email,
-      password
-    };
-    
-    // 仮のユーザーリストに追加（実際のアプリケーションでは不要）
-    dummyUsers.push(newUser);
-    
-    // ローカルストレージに保存（実際のアプリケーションでは不要）
-    localStorage.setItem('users', JSON.stringify(dummyUsers));
-    
-    // 登録成功メッセージを表示
-    setSuccess(true);
+    setIsLoading(true);
     setError('');
+    
+    try {
+      // APIを呼び出してユーザー登録
+      const response = await registerUser(email, password);
+      
+      if (response.success) {
+        setNewUserId(response.user.userId);
+        setSuccess(true);
+      } else {
+        throw new Error(response.error || '登録に失敗しました');
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('登録中に予期せぬエラーが発生しました');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBackToLogin = () => {
@@ -97,6 +85,7 @@ const Register: React.FC = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
                     required
+                    disabled={isLoading}
                   />
                 </div>
                 
@@ -109,6 +98,7 @@ const Register: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
                     required
+                    disabled={isLoading}
                   />
                 </div>
                 
@@ -121,6 +111,7 @@ const Register: React.FC = () => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
                     required
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -135,14 +126,16 @@ const Register: React.FC = () => {
                 <button
                   type="submit"
                   className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400 w-48"
+                  disabled={isLoading}
                 >
-                  登録する
+                  {isLoading ? '登録中...' : '登録する'}
                 </button>
                 
                 <button
                   type="button"
                   onClick={handleBackToLogin}
                   className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 w-48"
+                  disabled={isLoading}
                 >
                   キャンセル
                 </button>

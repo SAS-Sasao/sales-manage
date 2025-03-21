@@ -7,27 +7,20 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, error: authError, isLoading } = useAuth();
 
-  // 仮のユーザーデータ（実際のアプリケーションではバックエンドから取得）
-  const dummyUsers = [
-    { id: '00001', email: 'user1@example.com', password: 'password1' },
-    { id: '00002', email: 'user2@example.com', password: 'password2' },
-  ];
-
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 簡易的な認証ロジック
-    const user = dummyUsers.find(u => u.id === userId && u.password === password);
-    
-    if (user) {
-      // ログイン成功時の処理
-      login({ id: user.id, email: user.email });
+    try {
+      await login(userId, password);
       navigate('/');
-    } else {
-      // ログイン失敗時の処理
-      setError('ユーザーIDまたはパスワードが正しくありません。');
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('ログインに失敗しました');
+      }
     }
   };
 
@@ -72,9 +65,9 @@ const Login: React.FC = () => {
               </div>
             </div>
             
-            {error && (
+            {(error || authError) && (
               <div className="mb-4 text-red-300 text-sm text-center">
-                {error}
+                {error || authError}
               </div>
             )}
             
@@ -82,14 +75,16 @@ const Login: React.FC = () => {
               <button
                 type="submit"
                 className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400 w-48"
+                disabled={isLoading}
               >
-                ログイン [F6]
+                {isLoading ? 'ログイン中...' : 'ログイン [F6]'}
               </button>
               
               <button
                 type="button"
                 onClick={() => navigate('/register')}
                 className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400 w-48"
+                disabled={isLoading}
               >
                 パスワード再設定
               </button>
@@ -100,6 +95,7 @@ const Login: React.FC = () => {
             <button
               onClick={() => navigate('/register')}
               className="text-indigo-300 hover:text-white text-sm"
+              disabled={isLoading}
             >
               新規ユーザー登録はこちら
             </button>

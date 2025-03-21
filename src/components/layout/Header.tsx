@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, parentPage }) => {
           <h1 className="text-xl font-bold">ケミカル同仁基幹システム</h1>
         </div>
         <div className="flex items-center space-x-4 text-sm">
-          {currentUser && <div>ユーザーID: {currentUser.id}</div>}
+          {currentUser && <div>ユーザーID: {currentUser.userId}</div>}
           <div>ログイン日時: {currentDate} {currentTime}</div>
           <button 
             className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded"
