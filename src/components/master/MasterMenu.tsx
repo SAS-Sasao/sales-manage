@@ -24,7 +24,6 @@ const MasterMenu: React.FC = () => {
       <Header parentPage="マスタメンテ" />
       <main className="flex-grow overflow-auto">
         <div className="container mx-auto py-4">
-          <h2 className="text-xl font-bold mb-4">マスタメンテ</h2>
           <div className="grid grid-cols-2 gap-4 p-4 max-w-4xl mx-auto">
             {masterMenuItems.map((item) => (
               <Link
