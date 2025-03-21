@@ -31,7 +31,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-beige-100" onKeyDown={handleKeyDown}>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100" onKeyDown={handleKeyDown}>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-indigo-700">ケミカル同仁基幹システム</h1>
@@ -71,10 +71,10 @@ const Login: React.FC = () => {
               </div>
             )}
             
-            <div className="flex justify-between">
+            <div className="flex justify-between space-x-4">
               <button
                 type="submit"
-                className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400 w-48"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 w-48"
                 disabled={isLoading}
               >
                 {isLoading ? 'ログイン中...' : 'ログイン [F6]'}
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate('/register')}
-                className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400 w-48"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 w-48"
                 disabled={isLoading}
               >
                 パスワード再設定
