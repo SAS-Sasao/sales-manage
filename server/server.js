@@ -2,13 +2,21 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
-const { createUser, authenticateUser } = require('./db/db');
+const { 
+  createUser, 
+  authenticateUser,
+  getAllTaxRates,
+  findTaxRateByCode,
+  createTaxRate,
+  updateTaxRate,
+  deleteTaxRate
+} = require('./db/db');
 
 // データベースの初期化
 require('./db/init');
 
 const app = express();
-const PORT = process.env.PORT || 5555;
+const PORT = process.env.PORT || 4322;
 
 // ミドルウェア
 app.use(cors());
@@ -71,6 +79,96 @@ app.post('/api/login', async (req, res) => {
   } catch (error) {
     console.error('ログインエラー:', error);
     res.status(500).json({ error: error.message || 'ログインに失敗しました' });
+  }
+});
+
+// 税率マスタ関連のエンドポイント
+
+// 全ての税率を取得
+app.get('/api/tax-rates', async (req, res) => {
+  try {
+    const taxRates = await getAllTaxRates();
+    res.json({ success: true, taxRates });
+  } catch (error) {
+    console.error('税率取得エラー:', error);
+    res.status(500).json({ error: error.message || '税率の取得に失敗しました' });
+  }
+});
+
+// 税率をコードで取得
+app.get('/api/tax-rates/:taxCode', async (req, res) => {
+  try {
+    const { taxCode } = req.params;
+    const taxRate = await findTaxRateByCode(taxCode);
+    
+    if (!taxRate) {
+      return res.status(404).json({ error: '指定された税率コードは存在しません' });
+    }
+    
+    res.json({ success: true, taxRate });
+  } catch (error) {
+    console.error('税率取得エラー:', error);
+    res.status(500).json({ error: error.message || '税率の取得に失敗しました' });
+  }
+});
+
+// 新しい税率を作成
+app.post('/api/tax-rates', async (req, res) => {
+  try {
+    const { taxName, rate, calculationType, userId } = req.body;
+    
+    if (!taxName || rate === undefined || !calculationType || !userId) {
+      return res.status(400).json({ error: '税率名、税率値、計算区分、ユーザーIDは必須です' });
+    }
+    
+    const newTaxRate = await createTaxRate(taxName, rate, calculationType, userId);
+    
+    res.status(201).json({
+      success: true,
+      taxRate: newTaxRate
+    });
+  } catch (error) {
+    console.error('税率作成エラー:', error);
+    res.status(500).json({ error: error.message || '税率の作成に失敗しました' });
+  }
+});
+
+// 税率を更新
+app.put('/api/tax-rates/:taxCode', async (req, res) => {
+  try {
+    const { taxCode } = req.params;
+    const { taxName, rate, calculationType, userId } = req.body;
+    
+    if (!taxName || rate === undefined || !calculationType || !userId) {
+      return res.status(400).json({ error: '税率名、税率値、計算区分、ユーザーIDは必須です' });
+    }
+    
+    const updatedTaxRate = await updateTaxRate(taxCode, taxName, rate, calculationType, userId);
+    
+    res.json({
+      success: true,
+      taxRate: updatedTaxRate
+    });
+  } catch (error) {
+    console.error('税率更新エラー:', error);
+    res.status(500).json({ error: error.message || '税率の更新に失敗しました' });
+  }
+});
+
+// 税率を削除
+app.delete('/api/tax-rates/:taxCode', async (req, res) => {
+  try {
+    const { taxCode } = req.params;
+    
+    const result = await deleteTaxRate(taxCode);
+    
+    res.json({
+      success: true,
+      message: `税率コード ${taxCode} が削除されました`
+    });
+  } catch (error) {
+    console.error('税率削除エラー:', error);
+    res.status(500).json({ error: error.message || '税率の削除に失敗しました' });
   }
 });
 

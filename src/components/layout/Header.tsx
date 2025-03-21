@@ -30,11 +30,14 @@ const Header: React.FC<HeaderProps> = ({ currentPage, parentPage }) => {
     }
   };
 
+  // 表示するタイトルを決定
+  const displayTitle = currentPage || 'ケミカル同仁基幹システム';
+
   return (
     <header className="bg-indigo-700 text-white py-2">
       <div className="flex justify-between items-center px-4">
         <div className="flex items-center">
-          <h1 className="text-xl font-bold">ケミカル同仁基幹システム</h1>
+          <h1 className="text-xl font-bold">{displayTitle}</h1>
         </div>
         <div className="flex items-center space-x-4 text-sm">
           {currentUser && <div>ユーザーID: {currentUser.userId}</div>}
