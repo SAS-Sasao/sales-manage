@@ -1,0 +1,5 @@
+--DB立ち上げ
+node server/server.js
+
+--サーバー立ち上げ
+npm start

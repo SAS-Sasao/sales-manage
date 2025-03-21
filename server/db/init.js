@@ -148,6 +148,74 @@ const db = new sqlite3.Database(dbPath, (err) => {
       });
     });
   });
+
+  // 拠点マスタテーブルの作成
+  db.run(`
+    CREATE TABLE IF NOT EXISTS locations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      location_code TEXT UNIQUE NOT NULL,
+      location_name TEXT NOT NULL,
+      created_by TEXT NOT NULL,
+      updated_by TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `, (err) => {
+    if (err) {
+      console.error('拠点マスタテーブル作成エラー:', err.message);
+      return;
+    }
+    console.log('拠点マスタテーブルが作成されました');
+    
+    // 初期拠点データの追加（開発用）
+    const initialLocations = [
+      { location_name: '本社', created_by: '00001', updated_by: '00001' },
+      { location_name: '東京支店', created_by: '00001', updated_by: '00001' },
+      { location_name: '大阪支店', created_by: '00001', updated_by: '00001' },
+      { location_name: '名古屋支店', created_by: '00001', updated_by: '00001' },
+      { location_name: '福岡支店', created_by: '00001', updated_by: '00001' }
+    ];
+    
+    // 拠点コードの最大値を取得
+    db.get('SELECT MAX(CAST(location_code AS INTEGER)) as maxCode FROM locations', [], (err, row) => {
+      if (err) {
+        console.error('拠点コード取得エラー:', err.message);
+        return;
+      }
+      
+      let nextCode = 1;
+      if (row && row.maxCode) {
+        nextCode = row.maxCode + 1;
+      }
+      
+      // 初期拠点データを追加
+      initialLocations.forEach((location) => {
+        const locationCode = String(nextCode).padStart(2, '0');
+        
+        db.get('SELECT * FROM locations WHERE location_name = ?', [location.location_name], (err, row) => {
+          if (err) {
+            console.error('拠点確認エラー:', err.message);
+            return;
+          }
+          
+          if (!row) {
+            db.run(
+              'INSERT INTO locations (location_code, location_name, created_by, updated_by) VALUES (?, ?, ?, ?)',
+              [locationCode, location.location_name, location.created_by, location.updated_by],
+              (err) => {
+                if (err) {
+                  console.error(`拠点データ追加エラー (${location.location_name}):`, err.message);
+                  return;
+                }
+                console.log(`拠点データが追加されました: ${location.location_name} (${locationCode})`);
+              }
+            );
+            nextCode++;
+          }
+        });
+      });
+    });
+  });
 });
 
 // データベース接続を閉じる（すべての操作が完了した後）

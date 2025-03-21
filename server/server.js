@@ -9,7 +9,12 @@ const {
   findTaxRateByCode,
   createTaxRate,
   updateTaxRate,
-  deleteTaxRate
+  deleteTaxRate,
+  getAllLocations,
+  findLocationByCode,
+  createLocation,
+  updateLocation,
+  deleteLocation
 } = require('./db/db');
 
 // データベースの初期化
@@ -169,6 +174,96 @@ app.delete('/api/tax-rates/:taxCode', async (req, res) => {
   } catch (error) {
     console.error('税率削除エラー:', error);
     res.status(500).json({ error: error.message || '税率の削除に失敗しました' });
+  }
+});
+
+// 拠点マスタ関連のエンドポイント
+
+// 全ての拠点を取得
+app.get('/api/locations', async (req, res) => {
+  try {
+    const locations = await getAllLocations();
+    res.json({ success: true, locations });
+  } catch (error) {
+    console.error('拠点取得エラー:', error);
+    res.status(500).json({ error: error.message || '拠点の取得に失敗しました' });
+  }
+});
+
+// 拠点をコードで取得
+app.get('/api/locations/:locationCode', async (req, res) => {
+  try {
+    const { locationCode } = req.params;
+    const location = await findLocationByCode(locationCode);
+    
+    if (!location) {
+      return res.status(404).json({ error: '指定された拠点コードは存在しません' });
+    }
+    
+    res.json({ success: true, location });
+  } catch (error) {
+    console.error('拠点取得エラー:', error);
+    res.status(500).json({ error: error.message || '拠点の取得に失敗しました' });
+  }
+});
+
+// 新しい拠点を作成
+app.post('/api/locations', async (req, res) => {
+  try {
+    const { locationName, userId } = req.body;
+    
+    if (!locationName || !userId) {
+      return res.status(400).json({ error: '拠点名、ユーザーIDは必須です' });
+    }
+    
+    const newLocation = await createLocation(locationName, userId);
+    
+    res.status(201).json({
+      success: true,
+      location: newLocation
+    });
+  } catch (error) {
+    console.error('拠点作成エラー:', error);
+    res.status(500).json({ error: error.message || '拠点の作成に失敗しました' });
+  }
+});
+
+// 拠点を更新
+app.put('/api/locations/:locationCode', async (req, res) => {
+  try {
+    const { locationCode } = req.params;
+    const { locationName, userId } = req.body;
+    
+    if (!locationName || !userId) {
+      return res.status(400).json({ error: '拠点名、ユーザーIDは必須です' });
+    }
+    
+    const updatedLocation = await updateLocation(locationCode, locationName, userId);
+    
+    res.json({
+      success: true,
+      location: updatedLocation
+    });
+  } catch (error) {
+    console.error('拠点更新エラー:', error);
+    res.status(500).json({ error: error.message || '拠点の更新に失敗しました' });
+  }
+});
+
+// 拠点を削除
+app.delete('/api/locations/:locationCode', async (req, res) => {
+  try {
+    const { locationCode } = req.params;
+    
+    const result = await deleteLocation(locationCode);
+    
+    res.json({
+      success: true,
+      message: `拠点コード ${locationCode} が削除されました`
+    });
+  } catch (error) {
+    console.error('拠点削除エラー:', error);
+    res.status(500).json({ error: error.message || '拠点の削除に失敗しました' });
   }
 });
 

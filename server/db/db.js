@@ -284,6 +284,155 @@ const deleteTaxRate = async (taxCode) => {
   }
 };
 
+// 拠点コードの最大値を取得して次のコードを生成
+const generateNextLocationCode = () => {
+  return new Promise((resolve, reject) => {
+    const db = getDb();
+    
+    db.get('SELECT MAX(CAST(location_code AS INTEGER)) as maxCode FROM locations', [], (err, row) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      
+      let nextCode = 1;
+      if (row && row.maxCode) {
+        nextCode = row.maxCode + 1;
+      }
+      
+      // 2桁のゼロ埋め文字列に変換
+      const nextLocationCode = String(nextCode).padStart(2, '0');
+      resolve(nextLocationCode);
+      
+      db.close();
+    });
+  });
+};
+
+// 全ての拠点を取得
+const getAllLocations = () => {
+  return new Promise((resolve, reject) => {
+    const db = getDb();
+    
+    db.all('SELECT * FROM locations ORDER BY CAST(location_code AS INTEGER)', [], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      
+      resolve(rows);
+      db.close();
+    });
+  });
+};
+
+// 拠点をコードで検索
+const findLocationByCode = (locationCode) => {
+  return new Promise((resolve, reject) => {
+    const db = getDb();
+    
+    db.get('SELECT * FROM locations WHERE location_code = ?', [locationCode], (err, row) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      
+      resolve(row);
+      db.close();
+    });
+  });
+};
+
+// 新しい拠点を作成
+const createLocation = async (locationName, userId) => {
+  try {
+    // 次の拠点コードを生成
+    const locationCode = await generateNextLocationCode();
+    
+    return new Promise((resolve, reject) => {
+      const db = getDb();
+      
+      db.run(
+        'INSERT INTO locations (location_code, location_name, created_by, updated_by) VALUES (?, ?, ?, ?)',
+        [locationCode, locationName, userId, userId],
+        function(err) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          
+          resolve({ locationCode, locationName });
+          db.close();
+        }
+      );
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+// 拠点を更新
+const updateLocation = async (locationCode, locationName, userId) => {
+  try {
+    // 拠点の存在確認
+    const existingLocation = await findLocationByCode(locationCode);
+    if (!existingLocation) {
+      throw new Error('指定された拠点コードは存在しません');
+    }
+    
+    return new Promise((resolve, reject) => {
+      const db = getDb();
+      
+      db.run(
+        'UPDATE locations SET location_name = ?, updated_by = ?, updated_at = CURRENT_TIMESTAMP WHERE location_code = ?',
+        [locationName, userId, locationCode],
+        function(err) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          
+          resolve({ locationCode, locationName });
+          db.close();
+        }
+      );
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+// 拠点を削除
+const deleteLocation = async (locationCode) => {
+  try {
+    // 拠点の存在確認
+    const existingLocation = await findLocationByCode(locationCode);
+    if (!existingLocation) {
+      throw new Error('指定された拠点コードは存在しません');
+    }
+    
+    return new Promise((resolve, reject) => {
+      const db = getDb();
+      
+      db.run(
+        'DELETE FROM locations WHERE location_code = ?',
+        [locationCode],
+        function(err) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          
+          resolve({ success: true, locationCode });
+          db.close();
+        }
+      );
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   getDb,
   generateNextUserId,
@@ -296,5 +445,11 @@ module.exports = {
   findTaxRateByCode,
   createTaxRate,
   updateTaxRate,
-  deleteTaxRate
+  deleteTaxRate,
+  generateNextLocationCode,
+  getAllLocations,
+  findLocationByCode,
+  createLocation,
+  updateLocation,
+  deleteLocation
 };
