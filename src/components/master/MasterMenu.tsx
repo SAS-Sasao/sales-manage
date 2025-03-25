@@ -2,42 +2,60 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../layout/Header';
 
-interface MasterMenuItem {
-  id: string;
-  title: string;
-  icon: string;
-  path: string;
-}
-
 const MasterMenu: React.FC = () => {
-  const masterMenuItems: MasterMenuItem[] = [
-    { id: 'staff', title: '担当者マスタ', icon: '👤', path: '/master/staff' },
-    { id: 'location', title: '拠点マスタ', icon: '🏢', path: '/master/location' },
-    { id: 'tax', title: '税率マスタ', icon: '💹', path: '/master/tax' },
-    { id: 'product', title: '商品マスタ', icon: '📦', path: '/master/product' },
-    { id: 'supplier', title: '仕入先マスタ', icon: '🏭', path: '/master/supplier' },
-    { id: 'customer', title: '得意先マスタ', icon: '🏪', path: '/master/customer' },
-  ];
-
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      <Header parentPage="マスタメンテ" />
-      <main className="flex-grow overflow-auto">
-        <div className="container mx-auto py-4">
-          <div className="grid grid-cols-2 gap-4 p-4 max-w-4xl mx-auto">
-            {masterMenuItems.map((item) => (
-              <Link
-                key={item.id}
-                to={item.path}
-                className="border border-blue-300 rounded-md p-4 flex items-center cursor-pointer hover:bg-gray-100"
-              >
-                <div className="flex items-center w-full">
-                  <span className="mr-3 text-blue-500">{item.icon}</span>
-                  <span>{item.title}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
+    <div className="flex flex-col min-h-screen bg-gray-100">
+      <Header currentPage="マスタメンテ" />
+      
+      <main className="flex-grow container mx-auto py-6 px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* プルダウン項目マスタ */}
+          <Link to="/master/dropdown" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center">
+              <span className="text-3xl mr-4">👤</span>
+              <h2 className="text-xl font-semibold">プルダウン項目マスタ</h2>
+            </div>
+          </Link>
+          
+          {/* 拠点マスタ */}
+          <Link to="/master/location" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center">
+              <span className="text-3xl mr-4">🏢</span>
+              <h2 className="text-xl font-semibold">拠点マスタ</h2>
+            </div>
+          </Link>
+          
+          {/* 税率マスタ */}
+          <Link to="/master/tax" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center">
+              <span className="text-3xl mr-4">✅</span>
+              <h2 className="text-xl font-semibold">税率マスタ</h2>
+            </div>
+          </Link>
+          
+          {/* 商品マスタ */}
+          <Link to="/master/product" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center">
+              <span className="text-3xl mr-4">📦</span>
+              <h2 className="text-xl font-semibold">商品マスタ</h2>
+            </div>
+          </Link>
+          
+          {/* 仕入先マスタ */}
+          <Link to="/master/supplier" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center">
+              <span className="text-3xl mr-4">🏭</span>
+              <h2 className="text-xl font-semibold">仕入先マスタ</h2>
+            </div>
+          </Link>
+          
+          {/* 得意先マスタ */}
+          <Link to="/master/customer" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center">
+              <span className="text-3xl mr-4">🏪</span>
+              <h2 className="text-xl font-semibold">得意先マスタ</h2>
+            </div>
+          </Link>
         </div>
       </main>
     </div>

@@ -1,12 +1,21 @@
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import React, { ReactNode } from 'react';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
-const PrivateRoute: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+interface PrivateRouteProps {
+  children: ReactNode;
+}
 
-  // 認証されていない場合はログインページにリダイレクト
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
+  const { currentUser } = useAuth();
+
+  if (!currentUser) {
+    // ユーザーがログインしていない場合はログインページにリダイレクト
+    return <Navigate to="/login" replace />;
+  }
+
+  // ユーザーがログインしている場合は子コンポーネントを表示
+  return <>{children}</>;
 };
 
 export default PrivateRoute;

@@ -216,6 +216,65 @@ const db = new sqlite3.Database(dbPath, (err) => {
       });
     });
   });
+
+  // プルダウン項目マスタテーブルの作成
+  db.run(`
+    CREATE TABLE IF NOT EXISTS dropdown_items (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      dropdown_id TEXT NOT NULL,
+      dropdown_value TEXT NOT NULL,
+      created_by TEXT NOT NULL,
+      updated_by TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(dropdown_id, dropdown_value)
+    )
+  `, (err) => {
+    if (err) {
+      console.error('プルダウン項目マスタテーブル作成エラー:', err.message);
+      return;
+    }
+    console.log('プルダウン項目マスタテーブルが作成されました');
+    
+    // 初期プルダウン項目データの追加（開発用）
+    const initialDropdownItems = [
+      { dropdown_id: 'payment_method', dropdown_value: '現金', created_by: '00001', updated_by: '00001' },
+      { dropdown_id: 'payment_method', dropdown_value: '銀行振込', created_by: '00001', updated_by: '00001' },
+      { dropdown_id: 'payment_method', dropdown_value: 'クレジットカード', created_by: '00001', updated_by: '00001' },
+      { dropdown_id: 'payment_method', dropdown_value: '電子マネー', created_by: '00001', updated_by: '00001' },
+      { dropdown_id: 'delivery_status', dropdown_value: '準備中', created_by: '00001', updated_by: '00001' },
+      { dropdown_id: 'delivery_status', dropdown_value: '発送済み', created_by: '00001', updated_by: '00001' },
+      { dropdown_id: 'delivery_status', dropdown_value: '配達中', created_by: '00001', updated_by: '00001' },
+      { dropdown_id: 'delivery_status', dropdown_value: '配達完了', created_by: '00001', updated_by: '00001' },
+      { dropdown_id: 'priority', dropdown_value: '高', created_by: '00001', updated_by: '00001' },
+      { dropdown_id: 'priority', dropdown_value: '中', created_by: '00001', updated_by: '00001' },
+      { dropdown_id: 'priority', dropdown_value: '低', created_by: '00001', updated_by: '00001' }
+    ];
+    
+    // 初期プルダウン項目データを追加
+    initialDropdownItems.forEach((item) => {
+      db.get('SELECT * FROM dropdown_items WHERE dropdown_id = ? AND dropdown_value = ?', [item.dropdown_id, item.dropdown_value], (err, row) => {
+        if (err) {
+          console.error('プルダウン項目確認エラー:', err.message);
+          return;
+        }
+        
+        if (!row) {
+          db.run(
+            'INSERT INTO dropdown_items (dropdown_id, dropdown_value, created_by, updated_by) VALUES (?, ?, ?, ?)',
+            [item.dropdown_id, item.dropdown_value, item.created_by, item.updated_by],
+            (err) => {
+              if (err) {
+                console.error(`プルダウン項目データ追加エラー (${item.dropdown_id} - ${item.dropdown_value}):`, err.message);
+                return;
+              }
+              console.log(`プルダウン項目データが追加されました: ${item.dropdown_id} - ${item.dropdown_value}`);
+            }
+          );
+        }
+      });
+    });
+  });
 });
 
 // データベース接続を閉じる（すべての操作が完了した後）

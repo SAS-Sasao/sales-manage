@@ -433,6 +433,180 @@ const deleteLocation = async (locationCode) => {
   }
 };
 
+// 全てのプルダウン項目IDを取得
+const getAllDropdownIds = () => {
+  return new Promise((resolve, reject) => {
+    const db = getDb();
+    
+    db.all('SELECT DISTINCT dropdown_id FROM dropdown_items ORDER BY dropdown_id', [], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      
+      resolve(rows.map(row => row.dropdown_id));
+      db.close();
+    });
+  });
+};
+
+// 特定のプルダウンIDに関連する全ての項目を取得
+const getDropdownItemsById = (dropdownId) => {
+  return new Promise((resolve, reject) => {
+    const db = getDb();
+    
+    db.all('SELECT * FROM dropdown_items WHERE dropdown_id = ? ORDER BY id', [dropdownId], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      
+      resolve(rows);
+      db.close();
+    });
+  });
+};
+
+// 全てのプルダウン項目を取得
+const getAllDropdownItems = () => {
+  return new Promise((resolve, reject) => {
+    const db = getDb();
+    
+    db.all('SELECT * FROM dropdown_items ORDER BY dropdown_id, id', [], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      
+      resolve(rows);
+      db.close();
+    });
+  });
+};
+
+// プルダウン項目を検索
+const findDropdownItem = (dropdownId, dropdownValue) => {
+  return new Promise((resolve, reject) => {
+    const db = getDb();
+    
+    db.get('SELECT * FROM dropdown_items WHERE dropdown_id = ? AND dropdown_value = ?', [dropdownId, dropdownValue], (err, row) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      
+      resolve(row);
+      db.close();
+    });
+  });
+};
+
+// 新しいプルダウン項目を作成
+const createDropdownItem = async (dropdownId, dropdownValue, userId) => {
+  try {
+    // 重複チェック
+    const existingItem = await findDropdownItem(dropdownId, dropdownValue);
+    if (existingItem) {
+      throw new Error('このプルダウンIDと値の組み合わせは既に存在します');
+    }
+    
+    return new Promise((resolve, reject) => {
+      const db = getDb();
+      
+      db.run(
+        'INSERT INTO dropdown_items (dropdown_id, dropdown_value, created_by, updated_by) VALUES (?, ?, ?, ?)',
+        [dropdownId, dropdownValue, userId, userId],
+        function(err) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          
+          resolve({ id: this.lastID, dropdownId, dropdownValue });
+          db.close();
+        }
+      );
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+// プルダウン項目を更新
+const updateDropdownItem = async (id, dropdownId, dropdownValue, userId) => {
+  try {
+    // 重複チェック（同じIDで別の項目が存在するか）
+    const existingItem = await findDropdownItem(dropdownId, dropdownValue);
+    if (existingItem && existingItem.id !== id) {
+      throw new Error('このプルダウンIDと値の組み合わせは既に存在します');
+    }
+    
+    return new Promise((resolve, reject) => {
+      const db = getDb();
+      
+      db.run(
+        'UPDATE dropdown_items SET dropdown_id = ?, dropdown_value = ?, updated_by = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [dropdownId, dropdownValue, userId, id],
+        function(err) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          
+          if (this.changes === 0) {
+            reject(new Error('指定されたIDのプルダウン項目は存在しません'));
+            return;
+          }
+          
+          resolve({ id, dropdownId, dropdownValue });
+          db.close();
+        }
+      );
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+// プルダウン項目を削除
+const deleteDropdownItem = (id) => {
+  return new Promise((resolve, reject) => {
+    const db = getDb();
+    
+    db.run('DELETE FROM dropdown_items WHERE id = ?', [id], function(err) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      
+      if (this.changes === 0) {
+        reject(new Error('指定されたIDのプルダウン項目は存在しません'));
+        return;
+      }
+      
+      resolve({ success: true, id });
+      db.close();
+    });
+  });
+};
+
+// プルダウンIDに関連する全ての項目を削除
+const deleteDropdownItemsById = (dropdownId) => {
+  return new Promise((resolve, reject) => {
+    const db = getDb();
+    
+    db.run('DELETE FROM dropdown_items WHERE dropdown_id = ?', [dropdownId], function(err) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      
+      resolve({ success: true, count: this.changes, dropdownId });
+      db.close();
+    });
+  });
+};
+
 module.exports = {
   getDb,
   generateNextUserId,
@@ -451,5 +625,13 @@ module.exports = {
   findLocationByCode,
   createLocation,
   updateLocation,
-  deleteLocation
+  deleteLocation,
+  getAllDropdownIds,
+  getDropdownItemsById,
+  getAllDropdownItems,
+  findDropdownItem,
+  createDropdownItem,
+  updateDropdownItem,
+  deleteDropdownItem,
+  deleteDropdownItemsById
 };

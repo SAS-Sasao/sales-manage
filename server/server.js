@@ -14,7 +14,15 @@ const {
   findLocationByCode,
   createLocation,
   updateLocation,
-  deleteLocation
+  deleteLocation,
+  getAllDropdownIds,
+  getDropdownItemsById,
+  getAllDropdownItems,
+  findDropdownItem,
+  createDropdownItem,
+  updateDropdownItem,
+  deleteDropdownItem,
+  deleteDropdownItemsById
 } = require('./db/db');
 
 // データベースの初期化
@@ -264,6 +272,119 @@ app.delete('/api/locations/:locationCode', async (req, res) => {
   } catch (error) {
     console.error('拠点削除エラー:', error);
     res.status(500).json({ error: error.message || '拠点の削除に失敗しました' });
+  }
+});
+
+// プルダウン項目マスタ関連のエンドポイント
+
+// 全てのプルダウンIDを取得
+app.get('/api/dropdown/ids', async (req, res) => {
+  try {
+    const dropdownIds = await getAllDropdownIds();
+    res.json({ success: true, dropdownIds });
+  } catch (error) {
+    console.error('プルダウンID取得エラー:', error);
+    res.status(500).json({ error: error.message || 'プルダウンIDの取得に失敗しました' });
+  }
+});
+
+// 特定のプルダウンIDに関連する全ての項目を取得
+app.get('/api/dropdown/items/:dropdownId', async (req, res) => {
+  try {
+    const { dropdownId } = req.params;
+    const items = await getDropdownItemsById(dropdownId);
+    res.json({ success: true, items });
+  } catch (error) {
+    console.error('プルダウン項目取得エラー:', error);
+    res.status(500).json({ error: error.message || 'プルダウン項目の取得に失敗しました' });
+  }
+});
+
+// 全てのプルダウン項目を取得
+app.get('/api/dropdown/items', async (req, res) => {
+  try {
+    const items = await getAllDropdownItems();
+    res.json({ success: true, items });
+  } catch (error) {
+    console.error('プルダウン項目取得エラー:', error);
+    res.status(500).json({ error: error.message || 'プルダウン項目の取得に失敗しました' });
+  }
+});
+
+// 新しいプルダウン項目を作成
+app.post('/api/dropdown/items', async (req, res) => {
+  try {
+    const { dropdownId, dropdownValue, userId } = req.body;
+    
+    if (!dropdownId || !dropdownValue || !userId) {
+      return res.status(400).json({ error: 'プルダウンID、プルダウン値、ユーザーIDは必須です' });
+    }
+    
+    const newItem = await createDropdownItem(dropdownId, dropdownValue, userId);
+    
+    res.status(201).json({
+      success: true,
+      item: newItem
+    });
+  } catch (error) {
+    console.error('プルダウン項目作成エラー:', error);
+    res.status(500).json({ error: error.message || 'プルダウン項目の作成に失敗しました' });
+  }
+});
+
+// プルダウン項目を更新
+app.put('/api/dropdown/items/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const { dropdownId, dropdownValue, userId } = req.body;
+    
+    if (!dropdownId || !dropdownValue || !userId) {
+      return res.status(400).json({ error: 'プルダウンID、プルダウン値、ユーザーIDは必須です' });
+    }
+    
+    const updatedItem = await updateDropdownItem(id, dropdownId, dropdownValue, userId);
+    
+    res.json({
+      success: true,
+      item: updatedItem
+    });
+  } catch (error) {
+    console.error('プルダウン項目更新エラー:', error);
+    res.status(500).json({ error: error.message || 'プルダウン項目の更新に失敗しました' });
+  }
+});
+
+// プルダウン項目を削除
+app.delete('/api/dropdown/items/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    
+    const result = await deleteDropdownItem(id);
+    
+    res.json({
+      success: true,
+      message: `プルダウン項目ID ${id} が削除されました`
+    });
+  } catch (error) {
+    console.error('プルダウン項目削除エラー:', error);
+    res.status(500).json({ error: error.message || 'プルダウン項目の削除に失敗しました' });
+  }
+});
+
+// プルダウンIDに関連する全ての項目を削除
+app.delete('/api/dropdown/items/by-id/:dropdownId', async (req, res) => {
+  try {
+    const { dropdownId } = req.params;
+    
+    const result = await deleteDropdownItemsById(dropdownId);
+    
+    res.json({
+      success: true,
+      message: `プルダウンID ${dropdownId} に関連する ${result.count} 件の項目が削除されました`
+    });
+  } catch (error) {
+    console.error('プルダウン項目削除エラー:', error);
+    res.status(500).json({ error: error.message || 'プルダウン項目の削除に失敗しました' });
   }
 });
 
