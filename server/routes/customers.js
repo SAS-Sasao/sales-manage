@@ -6,13 +6,16 @@ const db = require('../db/db');
 router.get('/', (req, res) => {
   const query = 'SELECT * FROM customers ORDER BY customer_code';
   
-  db.all(query, [], (err, rows) => {
+  const dbConnection = db.getDb();
+  dbConnection.all(query, [], (err, rows) => {
     if (err) {
       console.error('得意先一覧の取得エラー:', err);
+      dbConnection.close();
       return res.status(500).json({ error: '得意先一覧の取得に失敗しました' });
     }
     
     res.json(rows);
+    dbConnection.close();
   });
 });
 
@@ -21,17 +24,21 @@ router.get('/:id', (req, res) => {
   const { id } = req.params;
   const query = 'SELECT * FROM customers WHERE id = ?';
   
-  db.get(query, [id], (err, row) => {
+  const dbConnection = db.getDb();
+  dbConnection.get(query, [id], (err, row) => {
     if (err) {
       console.error(`得意先(ID: ${id})の取得エラー:`, err);
+      dbConnection.close();
       return res.status(500).json({ error: '得意先の取得に失敗しました' });
     }
     
     if (!row) {
+      dbConnection.close();
       return res.status(404).json({ error: '得意先が見つかりません' });
     }
     
     res.json(row);
+    dbConnection.close();
   });
 });
 
@@ -40,17 +47,21 @@ router.get('/code/:code', (req, res) => {
   const { code } = req.params;
   const query = 'SELECT * FROM customers WHERE customer_code = ?';
   
-  db.get(query, [code], (err, row) => {
+  const dbConnection = db.getDb();
+  dbConnection.get(query, [code], (err, row) => {
     if (err) {
       console.error(`得意先(コード: ${code})の取得エラー:`, err);
+      dbConnection.close();
       return res.status(500).json({ error: '得意先の取得に失敗しました' });
     }
     
     if (!row) {
+      dbConnection.close();
       return res.status(404).json({ error: '得意先が見つかりません' });
     }
     
     res.json(row);
+    dbConnection.close();
   });
 });
 
@@ -87,13 +98,16 @@ router.post('/', (req, res) => {
   }
   
   // 得意先コードの重複チェック
-  db.get('SELECT * FROM customers WHERE customer_code = ?', [customer_code], (err, row) => {
+  const dbConnection = db.getDb();
+  dbConnection.get('SELECT * FROM customers WHERE customer_code = ?', [customer_code], (err, row) => {
     if (err) {
       console.error('得意先コード重複チェックエラー:', err);
+      dbConnection.close();
       return res.status(500).json({ error: '得意先の作成に失敗しました' });
     }
     
     if (row) {
+      dbConnection.close();
       return res.status(400).json({ error: '既に存在する得意先コードです' });
     }
     
@@ -133,20 +147,24 @@ router.post('/', (req, res) => {
       updated_by
     ];
     
-    db.run(query, params, function(err) {
+    dbConnection.run(query, params, function(err) {
       if (err) {
         console.error('得意先作成エラー:', err);
+        dbConnection.close();
         return res.status(500).json({ error: '得意先の作成に失敗しました' });
       }
       
       // 作成した得意先を取得して返す
-      db.get('SELECT * FROM customers WHERE id = ?', [this.lastID], (err, row) => {
+      const lastId = this.lastID;
+      dbConnection.get('SELECT * FROM customers WHERE id = ?', [lastId], (err, row) => {
         if (err) {
           console.error('作成した得意先の取得エラー:', err);
+          dbConnection.close();
           return res.status(500).json({ error: '得意先の作成に失敗しました' });
         }
         
         res.status(201).json(row);
+        dbConnection.close();
       });
     });
   });
@@ -185,24 +203,29 @@ router.put('/:id', (req, res) => {
   }
   
   // 得意先の存在確認
-  db.get('SELECT * FROM customers WHERE id = ?', [id], (err, row) => {
+  const dbConnection = db.getDb();
+  dbConnection.get('SELECT * FROM customers WHERE id = ?', [id], (err, row) => {
     if (err) {
       console.error(`得意先(ID: ${id})の存在確認エラー:`, err);
+      dbConnection.close();
       return res.status(500).json({ error: '得意先の更新に失敗しました' });
     }
     
     if (!row) {
+      dbConnection.close();
       return res.status(404).json({ error: '得意先が見つかりません' });
     }
     
     // 得意先コードの重複チェック（自分以外）
-    db.get('SELECT * FROM customers WHERE customer_code = ? AND id != ?', [customer_code, id], (err, row) => {
+    dbConnection.get('SELECT * FROM customers WHERE customer_code = ? AND id != ?', [customer_code, id], (err, row) => {
       if (err) {
         console.error('得意先コード重複チェックエラー:', err);
+        dbConnection.close();
         return res.status(500).json({ error: '得意先の更新に失敗しました' });
       }
       
       if (row) {
+        dbConnection.close();
         return res.status(400).json({ error: '既に存在する得意先コードです' });
       }
       
@@ -258,20 +281,23 @@ router.put('/:id', (req, res) => {
         id
       ];
       
-      db.run(query, params, function(err) {
+      dbConnection.run(query, params, function(err) {
         if (err) {
           console.error(`得意先(ID: ${id})の更新エラー:`, err);
+          dbConnection.close();
           return res.status(500).json({ error: '得意先の更新に失敗しました' });
         }
         
         // 更新した得意先を取得して返す
-        db.get('SELECT * FROM customers WHERE id = ?', [id], (err, row) => {
+        dbConnection.get('SELECT * FROM customers WHERE id = ?', [id], (err, row) => {
           if (err) {
             console.error(`更新した得意先(ID: ${id})の取得エラー:`, err);
+            dbConnection.close();
             return res.status(500).json({ error: '得意先の更新に失敗しました' });
           }
           
           res.json(row);
+          dbConnection.close();
         });
       });
     });
@@ -283,24 +309,29 @@ router.delete('/:id', (req, res) => {
   const { id } = req.params;
   
   // 得意先の存在確認
-  db.get('SELECT * FROM customers WHERE id = ?', [id], (err, row) => {
+  const dbConnection = db.getDb();
+  dbConnection.get('SELECT * FROM customers WHERE id = ?', [id], (err, row) => {
     if (err) {
       console.error(`得意先(ID: ${id})の存在確認エラー:`, err);
+      dbConnection.close();
       return res.status(500).json({ error: '得意先の削除に失敗しました' });
     }
     
     if (!row) {
+      dbConnection.close();
       return res.status(404).json({ error: '得意先が見つかりません' });
     }
     
     // 得意先の削除
-    db.run('DELETE FROM customers WHERE id = ?', [id], function(err) {
+    dbConnection.run('DELETE FROM customers WHERE id = ?', [id], function(err) {
       if (err) {
         console.error(`得意先(ID: ${id})の削除エラー:`, err);
+        dbConnection.close();
         return res.status(500).json({ error: '得意先の削除に失敗しました' });
       }
       
       res.status(204).end();
+      dbConnection.close();
     });
   });
 });
