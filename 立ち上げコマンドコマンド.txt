@@ -1,5 +1,8 @@
---DB立ち上げ
+-タスクキル
+taskkill /F /IM node.exe
+
+--バックエンドサーバー立ち上げ（ポート4322）
 node server/server.js
 
---サーバー立ち上げ
+--フロントエンド立ち上げ（ポート4321）
 npm start
