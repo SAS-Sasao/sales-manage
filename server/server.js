@@ -29,7 +29,7 @@ const {
 require('./db/init');
 
 const app = express();
-const PORT = process.env.PORT || 4322;
+const PORT = process.env.PORT || 4321;
 
 // ミドルウェア
 app.use(cors());
