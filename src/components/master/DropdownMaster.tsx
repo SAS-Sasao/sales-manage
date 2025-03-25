@@ -256,6 +256,16 @@ const DropdownMaster: React.FC = () => {
     setNewDropdownValues([...newDropdownValues, '']);
   };
 
+  // 新規プルダウン値の入力フィールドを削除
+  const handleRemoveValueField = (indexToRemove: number) => {
+    if (newDropdownValues.length <= 1) {
+      // 最低1つは残す
+      return;
+    }
+    
+    setNewDropdownValues(newDropdownValues.filter((_, index) => index !== indexToRemove));
+  };
+
   // 新規プルダウン値の入力フィールドの値を更新
   const handleChangeDropdownValue = (index: number, value: string) => {
     const updatedValues = [...newDropdownValues];
@@ -295,7 +305,7 @@ const DropdownMaster: React.FC = () => {
               <div className="mb-4">
                 <label className="block text-gray-700 mb-2">プルダウン値（複数設定可能）</label>
                 {newDropdownValues.map((value, index) => (
-                  <div key={index} className="mb-2">
+                  <div key={index} className="mb-2 flex items-center">
                     <input
                       type="text"
                       value={value}
@@ -303,15 +313,26 @@ const DropdownMaster: React.FC = () => {
                       className="w-full p-2 border border-gray-300 rounded"
                       placeholder={`プルダウン値 ${index + 1}`}
                     />
+                    {/* 項目削除ボタン */}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveValueField(index)}
+                      className="ml-2 text-red-600 hover:text-red-800"
+                      title="この項目を削除"
+                    >
+                      ✕
+                    </button>
                   </div>
                 ))}
-                <button
-                  type="button"
-                  onClick={handleAddValueField}
-                  className="mt-2 text-blue-600 hover:text-blue-800"
-                >
-                  + 項目を追加
-                </button>
+                <div className="flex items-center mt-2">
+                  <button
+                    type="button"
+                    onClick={handleAddValueField}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    + 項目を追加
+                  </button>
+                </div>
               </div>
               
               <button
