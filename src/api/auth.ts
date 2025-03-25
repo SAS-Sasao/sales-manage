@@ -1,6 +1,6 @@
 // 認証関連のAPI呼び出しを行うモジュール
 
-const API_URL = 'http://localhost:4322/api';
+const API_URL = 'http://localhost:4321/api';
 
 // ユーザー登録
 export const registerUser = async (email: string, password: string) => {

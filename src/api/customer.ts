@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:4322/api';
+const API_URL = 'http://localhost:4321/api';
 
 // 得意先マスタの型定義
 export interface Customer {
