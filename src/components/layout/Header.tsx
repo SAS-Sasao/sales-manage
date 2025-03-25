@@ -31,7 +31,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage, parentPage }) => {
   };
 
   // 表示するタイトルを決定
-  const displayTitle = currentPage || 'ケミカル同仁基幹システム';
+  // メニュー画面の場合は「ケミカル同仁基幹システム」を表示
+  const displayTitle = currentPage === 'メニュー' ? 'ケミカル同仁基幹システム' : currentPage || 'ケミカル同仁基幹システム';
 
   return (
     <header className="bg-indigo-700 text-white py-2">
@@ -56,7 +57,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, parentPage }) => {
             <span className="mr-1">🏠</span>
             <span>メニュー</span>
           </Link>
-          {parentPage && (
+          {parentPage && currentPage !== 'メニュー' && (
             <>
               <span className="text-white mx-2">＞</span>
               <Link to="/master" className="text-white flex items-center hover:underline">
@@ -65,7 +66,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, parentPage }) => {
               </Link>
             </>
           )}
-          {currentPage && (
+          {currentPage && currentPage !== 'メニュー' && parentPage && (
+            <>
+              <span className="text-white mx-2">＞</span>
+              <span className="text-white">{currentPage}</span>
+            </>
+          )}
+          {currentPage && currentPage !== 'メニュー' && !parentPage && (
             <>
               <span className="text-white mx-2">＞</span>
               <span className="text-white">{currentPage}</span>
