@@ -30,8 +30,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, parentPage }) => {
     }
   };
 
-  // 常に「ケミカル同仁基幹システム」を表示
-  const displayTitle = 'ケミカル同仁基幹システム';
+  // 表示するタイトルを決定
+  // メニュー画面の場合は「ケミカル同仁基幹システム」を表示
+  // 個別画面の場合は画面名を表示
+  const displayTitle = currentPage === 'メニュー' || !currentPage 
+    ? 'ケミカル同仁基幹システム' 
+    : currentPage;
 
   return (
     <header className="bg-indigo-700 text-white py-2">
