@@ -2,6 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 const path = require('path');
 const { initializeCustomerTable } = require('./migrations/customer');
+const { initializeStaffTable } = require('./migrations/staff');
 
 // データベースファイルのパス
 const dbPath = path.join(__dirname, 'sales_manage.db');
@@ -279,6 +280,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
   // 得意先マスタテーブルの初期化
   initializeCustomerTable();
+  
+  // 担当者マスタテーブルの初期化
+  initializeStaffTable();
 });
 
 // データベース接続を閉じる（すべての操作が完了した後）

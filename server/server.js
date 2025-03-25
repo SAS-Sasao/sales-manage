@@ -43,6 +43,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // ルーターの設定
 app.use('/api/customers', require('./routes/customers'));
+app.use('/api/staff', require('./routes/staff'));
 
 // API エンドポイント
 

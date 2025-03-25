@@ -74,18 +74,52 @@ const CustomerMaster: React.FC = () => {
           setCustomer(customerData);
         }
         
-        // プルダウン選択肢の取得
-        const [invoiceMethodsData, taxProcessingData, taxRoundingData, staffData] = await Promise.all([
-          getDropdownItemsById('invoice_method'),
-          getDropdownItemsById('tax_processing'),
-          getDropdownItemsById('tax_rounding'),
-          getAllStaff()
-        ]);
-        
-        setInvoiceMethods(invoiceMethodsData.map(item => item.dropdown_value));
-        setTaxProcessingOptions(taxProcessingData.map(item => item.dropdown_value));
-        setTaxRoundingOptions(taxRoundingData.map(item => item.dropdown_value));
-        setStaffMembers(staffData);
+        try {
+          // プルダウン選択肢の取得
+          const [invoiceMethodsResponse, taxProcessingResponse, taxRoundingResponse, staffData] = await Promise.all([
+            getDropdownItemsById('invoice_method'),
+            getDropdownItemsById('tax_processing'),
+            getDropdownItemsById('tax_rounding'),
+            getAllStaff()
+          ]);
+          
+          // デフォルト値の設定
+          const defaultInvoiceMethods = ['郵送', 'WEB'];
+          const defaultTaxProcessing = ['請求書単位', '商品単位'];
+          const defaultTaxRounding = ['切捨て', '切上げ'];
+          
+          // レスポンスからデータを抽出（存在しない場合はデフォルト値を使用）
+          const invoiceMethodsData = invoiceMethodsResponse?.items || [];
+          const taxProcessingData = taxProcessingResponse?.items || [];
+          const taxRoundingData = taxRoundingResponse?.items || [];
+          
+          setInvoiceMethods(
+            invoiceMethodsData.length > 0 
+              ? invoiceMethodsData.map((item: { dropdown_value: string }) => item.dropdown_value)
+              : defaultInvoiceMethods
+          );
+          
+          setTaxProcessingOptions(
+            taxProcessingData.length > 0 
+              ? taxProcessingData.map((item: { dropdown_value: string }) => item.dropdown_value)
+              : defaultTaxProcessing
+          );
+          
+          setTaxRoundingOptions(
+            taxRoundingData.length > 0 
+              ? taxRoundingData.map((item: { dropdown_value: string }) => item.dropdown_value)
+              : defaultTaxRounding
+          );
+          
+          setStaffMembers(staffData || []);
+        } catch (error) {
+          console.error('プルダウン選択肢の取得エラー:', error);
+          // エラー時はデフォルト値を設定
+          setInvoiceMethods(['郵送', 'WEB']);
+          setTaxProcessingOptions(['請求書単位', '商品単位']);
+          setTaxRoundingOptions(['切捨て', '切上げ']);
+          setStaffMembers([]);
+        }
         
       } catch (err) {
         if (err instanceof Error) {
