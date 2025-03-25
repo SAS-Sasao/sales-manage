@@ -20,7 +20,8 @@ const DropdownMaster: React.FC = () => {
   
   // 新規登録用の状態
   const [newDropdownId, setNewDropdownId] = useState<string>('');
-  const [newDropdownValues, setNewDropdownValues] = useState<string[]>(Array(10).fill(''));
+  // プルダウン値の初期表示を2つに変更
+  const [newDropdownValues, setNewDropdownValues] = useState<string[]>(Array(2).fill(''));
   
   // 編集用の状態
   const [selectedDropdownId, setSelectedDropdownId] = useState<string>('');
@@ -115,7 +116,7 @@ const DropdownMaster: React.FC = () => {
       
       // 入力フィールドをクリア
       setNewDropdownId('');
-      setNewDropdownValues(Array(10).fill(''));
+      setNewDropdownValues(Array(2).fill(''));
       
       // プルダウンIDを再取得
       await fetchDropdownIds();
