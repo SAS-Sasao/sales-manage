@@ -41,6 +41,9 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../build')));
 }
 
+// ルーターの設定
+app.use('/api/customers', require('./routes/customers'));
+
 // API エンドポイント
 
 // ユーザー登録

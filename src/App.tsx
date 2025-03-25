@@ -12,6 +12,7 @@ import StaffMaster from './components/master/StaffMaster';
 import ProductMaster from './components/master/ProductMaster';
 import SupplierMaster from './components/master/SupplierMaster';
 import CustomerMaster from './components/master/CustomerMaster';
+import CustomerList from './components/master/CustomerList';
 import PrivateRoute from './components/auth/PrivateRoute';
 import { AuthProvider } from './components/auth/AuthContext';
 
@@ -33,7 +34,12 @@ function App() {
           <Route path="/master/staff" element={<PrivateRoute><StaffMaster /></PrivateRoute>} />
           <Route path="/master/product" element={<PrivateRoute><ProductMaster /></PrivateRoute>} />
           <Route path="/master/supplier" element={<PrivateRoute><SupplierMaster /></PrivateRoute>} />
-          <Route path="/master/customer" element={<PrivateRoute><CustomerMaster /></PrivateRoute>} />
+          
+          {/* 得意先マスタ関連 */}
+          <Route path="/master/customer" element={<PrivateRoute><CustomerList /></PrivateRoute>} />
+          <Route path="/master/customer/new" element={<PrivateRoute><CustomerMaster /></PrivateRoute>} />
+          <Route path="/master/customer/edit/:id" element={<PrivateRoute><CustomerMaster /></PrivateRoute>} />
+          <Route path="/master/customer/:id" element={<PrivateRoute><CustomerMaster /></PrivateRoute>} />
           
           {/* 存在しないパスの場合はホームにリダイレクト */}
           <Route path="*" element={<Navigate to="/" replace />} />
