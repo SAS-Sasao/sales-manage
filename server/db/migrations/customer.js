@@ -1,5 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
-const db = require('../db');
+const dbModule = require('../db');
+const db = dbModule.getDb();
 
 // 得意先マスタテーブルの作成
 const createCustomerTable = () => {
