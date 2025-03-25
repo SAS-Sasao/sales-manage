@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const API_URL = 'http://localhost:4322/api';
+
 // 得意先マスタの型定義
 export interface Customer {
   id?: number;
@@ -32,7 +34,7 @@ export interface Customer {
 // 得意先一覧の取得
 export const getAllCustomers = async (): Promise<Customer[]> => {
   try {
-    const response = await axios.get('/api/customers');
+    const response = await axios.get(`${API_URL}/customers`);
     return response.data;
   } catch (error) {
     console.error('得意先一覧の取得に失敗しました:', error);
@@ -43,7 +45,7 @@ export const getAllCustomers = async (): Promise<Customer[]> => {
 // 得意先の取得（ID指定）
 export const getCustomerById = async (id: number): Promise<Customer> => {
   try {
-    const response = await axios.get(`/api/customers/${id}`);
+    const response = await axios.get(`${API_URL}/customers/${id}`);
     return response.data;
   } catch (error) {
     console.error(`得意先(ID: ${id})の取得に失敗しました:`, error);
@@ -54,7 +56,7 @@ export const getCustomerById = async (id: number): Promise<Customer> => {
 // 得意先の取得（コード指定）
 export const getCustomerByCode = async (code: string): Promise<Customer> => {
   try {
-    const response = await axios.get(`/api/customers/code/${code}`);
+    const response = await axios.get(`${API_URL}/customers/code/${code}`);
     return response.data;
   } catch (error) {
     console.error(`得意先(コード: ${code})の取得に失敗しました:`, error);
@@ -72,7 +74,7 @@ export const createCustomer = async (customer: Customer, userId: string): Promis
       updated_by: userId
     };
     
-    const response = await axios.post('/api/customers', customerWithCreator);
+    const response = await axios.post(`${API_URL}/customers`, customerWithCreator);
     return response.data;
   } catch (error) {
     console.error('得意先の作成に失敗しました:', error);
@@ -89,7 +91,7 @@ export const updateCustomer = async (id: number, customer: Customer, userId: str
       updated_by: userId
     };
     
-    const response = await axios.put(`/api/customers/${id}`, customerWithUpdater);
+    const response = await axios.put(`${API_URL}/customers/${id}`, customerWithUpdater);
     return response.data;
   } catch (error) {
     console.error(`得意先(ID: ${id})の更新に失敗しました:`, error);
@@ -100,7 +102,7 @@ export const updateCustomer = async (id: number, customer: Customer, userId: str
 // 得意先の削除
 export const deleteCustomer = async (id: number): Promise<void> => {
   try {
-    await axios.delete(`/api/customers/${id}`);
+    await axios.delete(`${API_URL}/customers/${id}`);
   } catch (error) {
     console.error(`得意先(ID: ${id})の削除に失敗しました:`, error);
     throw error;

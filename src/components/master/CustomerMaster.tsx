@@ -89,9 +89,9 @@ const CustomerMaster: React.FC = () => {
           const defaultTaxRounding = ['切捨て', '切上げ'];
           
           // レスポンスからデータを抽出（存在しない場合はデフォルト値を使用）
-          const invoiceMethodsData = invoiceMethodsResponse?.items || [];
-          const taxProcessingData = taxProcessingResponse?.items || [];
-          const taxRoundingData = taxRoundingResponse?.items || [];
+          const invoiceMethodsData = invoiceMethodsResponse || [];
+          const taxProcessingData = taxProcessingResponse || [];
+          const taxRoundingData = taxRoundingResponse || [];
           
           setInvoiceMethods(
             invoiceMethodsData.length > 0 
