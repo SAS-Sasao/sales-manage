@@ -3,6 +3,11 @@ import { Link } from 'react-router-dom';
 import Header from '../layout/Header';
 
 const MenuGrid: React.FC = () => {
+  // 開発中メッセージを表示する関数
+  const showDevelopmentMessage = (featureName: string) => {
+    window.alert(`${featureName}機能は現在開発中です`);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header currentPage="メニュー" />
@@ -10,52 +15,70 @@ const MenuGrid: React.FC = () => {
       <main className="flex-grow container mx-auto py-6 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* 機能選択 */}
-          <Link to="/function-select" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div 
+            className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => showDevelopmentMessage('機能選択')}
+          >
             <div className="flex items-center">
               <span className="text-3xl mr-4">📋</span>
               <h2 className="text-xl font-semibold">機能選択</h2>
             </div>
-          </Link>
+          </div>
           
           {/* 受注管理 */}
-          <Link to="/order-management" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div 
+            className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => showDevelopmentMessage('受注管理')}
+          >
             <div className="flex items-center">
               <span className="text-3xl mr-4">🚢</span>
               <h2 className="text-xl font-semibold">受注管理</h2>
             </div>
-          </Link>
+          </div>
           
           {/* 出荷管理 */}
-          <Link to="/shipping-management" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div 
+            className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => showDevelopmentMessage('出荷管理')}
+          >
             <div className="flex items-center">
               <span className="text-3xl mr-4">🚚</span>
               <h2 className="text-xl font-semibold">出荷管理</h2>
             </div>
-          </Link>
+          </div>
           
           {/* 請求管理 */}
-          <Link to="/billing-management" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div 
+            className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => showDevelopmentMessage('請求管理')}
+          >
             <div className="flex items-center">
               <span className="text-3xl mr-4">💰</span>
               <h2 className="text-xl font-semibold">請求管理</h2>
             </div>
-          </Link>
+          </div>
           
           {/* 入荷管理 */}
-          <Link to="/receiving-management" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div 
+            className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => showDevelopmentMessage('入荷管理')}
+          >
             <div className="flex items-center">
               <span className="text-3xl mr-4">📦</span>
               <h2 className="text-xl font-semibold">入荷管理</h2>
             </div>
-          </Link>
+          </div>
           
           {/* 支払管理 */}
-          <Link to="/payment-management" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div 
+            className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => showDevelopmentMessage('支払管理')}
+          >
             <div className="flex items-center">
               <span className="text-3xl mr-4">💳</span>
               <h2 className="text-xl font-semibold">支払管理</h2>
             </div>
-          </Link>
+          </div>
           
           {/* マスタメンテ */}
           <Link to="/master" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
@@ -66,44 +89,59 @@ const MenuGrid: React.FC = () => {
           </Link>
           
           {/* 共通管理 */}
-          <Link to="/common-management" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div 
+            className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => showDevelopmentMessage('共通管理')}
+          >
             <div className="flex items-center">
               <span className="text-3xl mr-4">🔄</span>
               <h2 className="text-xl font-semibold">共通管理</h2>
             </div>
-          </Link>
+          </div>
           
           {/* 売上管理 */}
-          <Link to="/sales-management" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div 
+            className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => showDevelopmentMessage('売上管理')}
+          >
             <div className="flex items-center">
               <span className="text-3xl mr-4">📊</span>
               <h2 className="text-xl font-semibold">売上管理</h2>
             </div>
-          </Link>
+          </div>
           
           {/* 在庫管理 */}
-          <Link to="/inventory-management" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div 
+            className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => showDevelopmentMessage('在庫管理')}
+          >
             <div className="flex items-center">
               <span className="text-3xl mr-4">📝</span>
               <h2 className="text-xl font-semibold">在庫管理</h2>
             </div>
-          </Link>
+          </div>
           
           {/* 問合せ管理 */}
-          <Link to="/inquiry-management" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div 
+            className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => showDevelopmentMessage('問合せ管理')}
+          >
             <div className="flex items-center">
               <span className="text-3xl mr-4">❓</span>
               <h2 className="text-xl font-semibold">問合せ管理</h2>
             </div>
-          </Link>
+          </div>
           
           {/* システム管理 */}
-          <Link to="/system-management" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div 
+            className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => showDevelopmentMessage('システム管理')}
+          >
             <div className="flex items-center">
               <span className="text-3xl mr-4">⚙️</span>
               <h2 className="text-xl font-semibold">システム管理</h2>
             </div>
-          </Link>
+          </div>
           
           {/* ログアウト */}
           <Link to="/login" className="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-red-200">
