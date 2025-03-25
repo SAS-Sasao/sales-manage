@@ -1,6 +1,6 @@
 // 税率マスタ関連のAPI呼び出しを行うモジュール
 
-const API_URL = 'http://localhost:4321/api';
+const API_URL = 'http://localhost:4322/api';
 
 export interface TaxRate {
   id?: number;
