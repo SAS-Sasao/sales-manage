@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/db');
+const { getJstDateTime } = require('../db/db');
 
 // 担当者一覧の取得
 router.get('/', (req, res) => {
@@ -103,7 +104,7 @@ router.post('/', (req, res) => {
         staff_code, staff_name, email, department, position,
         phone_number, is_active, created_by, created_at,
         updated_by, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?, datetime('now'))
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     
     const params = [
@@ -115,7 +116,9 @@ router.post('/', (req, res) => {
       phone_number || null,
       is_active ? 1 : 0,
       created_by,
-      updated_by
+      getJstDateTime(),
+      updated_by,
+      getJstDateTime()
     ];
     
     dbConnection.run(query, params, function(err) {
@@ -197,7 +200,7 @@ router.put('/:id', (req, res) => {
           phone_number = ?,
           is_active = ?,
           updated_by = ?,
-          updated_at = datetime('now')
+          updated_at = ?
         WHERE id = ?
       `;
       
@@ -210,6 +213,7 @@ router.put('/:id', (req, res) => {
         phone_number || null,
         is_active ? 1 : 0,
         updated_by,
+        getJstDateTime(),
         id
       ];
       

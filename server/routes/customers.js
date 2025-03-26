@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/db');
+const { getJstDateTime } = require('../db/db');
 
 // 得意先一覧の取得
 router.get('/', (req, res) => {
@@ -119,7 +120,7 @@ router.post('/', (req, res) => {
         closing_day, payment_day, payment_site_day, tax_processing,
         tax_rounding, staff_id, wo_special_code, created_by,
         created_at, updated_by, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?, datetime('now'))
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     
     const params = [
@@ -144,7 +145,9 @@ router.post('/', (req, res) => {
       staff_id || null,
       wo_special_code || null,
       created_by,
-      updated_by
+      getJstDateTime(),
+      updated_by,
+      getJstDateTime()
     ];
     
     dbConnection.run(query, params, function(err) {
@@ -252,7 +255,7 @@ router.put('/:id', (req, res) => {
           staff_id = ?,
           wo_special_code = ?,
           updated_by = ?,
-          updated_at = datetime('now')
+          updated_at = ?
         WHERE id = ?
       `;
       
@@ -278,6 +281,7 @@ router.put('/:id', (req, res) => {
         staff_id || null,
         wo_special_code || null,
         updated_by,
+        getJstDateTime(),
         id
       ];
       

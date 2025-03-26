@@ -2,6 +2,22 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
+// 日本時間（JST）でYYYY/MM/DD hh:mm:ss形式の日時を返す関数
+const getJstDateTime = () => {
+  const now = new Date();
+  // UTC時間に9時間を加算して日本時間に変換
+  now.setTime(now.getTime() + 9 * 60 * 60 * 1000);
+  
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(now.getUTCDate()).padStart(2, '0');
+  const hours = String(now.getUTCHours()).padStart(2, '0');
+  const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+  
+  return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
+};
+
 // データベースファイルのパス
 const dbPath = path.join(__dirname, 'sales_manage.db');
 
@@ -235,8 +251,8 @@ const updateTaxRate = async (taxCode, taxName, rate, calculationType, userId) =>
       const db = getDb();
       
       db.run(
-        'UPDATE tax_rates SET tax_name = ?, rate = ?, calculation_type = ?, updated_by = ?, updated_at = CURRENT_TIMESTAMP WHERE tax_code = ?',
-        [taxName, rate, calculationType, userId, taxCode],
+        'UPDATE tax_rates SET tax_name = ?, rate = ?, calculation_type = ?, updated_by = ?, updated_at = ? WHERE tax_code = ?',
+        [taxName, rate, calculationType, userId, getJstDateTime(), taxCode],
         function(err) {
           if (err) {
             reject(err);
@@ -384,8 +400,8 @@ const updateLocation = async (locationCode, locationName, userId) => {
       const db = getDb();
       
       db.run(
-        'UPDATE locations SET location_name = ?, updated_by = ?, updated_at = CURRENT_TIMESTAMP WHERE location_code = ?',
-        [locationName, userId, locationCode],
+        'UPDATE locations SET location_name = ?, updated_by = ?, updated_at = ? WHERE location_code = ?',
+        [locationName, userId, getJstDateTime(), locationCode],
         function(err) {
           if (err) {
             reject(err);
@@ -545,8 +561,8 @@ const updateDropdownItem = async (id, dropdownId, dropdownValue, userId) => {
       const db = getDb();
       
       db.run(
-        'UPDATE dropdown_items SET dropdown_id = ?, dropdown_value = ?, updated_by = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-        [dropdownId, dropdownValue, userId, id],
+        'UPDATE dropdown_items SET dropdown_id = ?, dropdown_value = ?, updated_by = ?, updated_at = ? WHERE id = ?',
+        [dropdownId, dropdownValue, userId, getJstDateTime(), id],
         function(err) {
           if (err) {
             reject(err);
@@ -609,6 +625,7 @@ const deleteDropdownItemsById = (dropdownId) => {
 
 module.exports = {
   getDb,
+  getJstDateTime,
   generateNextUserId,
   findUserByEmail,
   findUserById,
