@@ -4,10 +4,13 @@ const bcrypt = require('bcryptjs');
 
 // 日本時間（JST）でYYYY/MM/DD hh:mm:ss形式の日時を返す関数
 const getJstDateTime = () => {
-  const now = new Date();
-  // UTC時間に9時間を加算して日本時間に変換
-  now.setTime(now.getTime() + 9 * 60 * 60 * 1000);
+  // 日本時間のタイムゾーンオフセットを設定（UTC+9）
+  const jstOffset = 9 * 60 * 60 * 1000; // 9時間をミリ秒に変換
   
+  // 現在のUTC時間を取得し、日本時間に変換
+  const now = new Date(Date.now() + jstOffset);
+  
+  // 日付と時刻の各部分を取得（UTCメソッドを使用して日本時間の値を取得）
   const year = now.getUTCFullYear();
   const month = String(now.getUTCMonth() + 1).padStart(2, '0');
   const day = String(now.getUTCDate()).padStart(2, '0');
@@ -15,6 +18,7 @@ const getJstDateTime = () => {
   const minutes = String(now.getUTCMinutes()).padStart(2, '0');
   const seconds = String(now.getUTCSeconds()).padStart(2, '0');
   
+  // YYYY/MM/DD hh:mm:ss 形式で返す
   return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
 };
 
