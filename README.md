@@ -1,46 +1,121 @@
-# Getting Started with Create React App
+# 販売管理システム
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+KJ向けに開発された販売管理システムです。商品の受発注から在庫管理、請求書発行までを一元管理するためのWebアプリケーションです。
 
-## Available Scripts
+## 概要
 
-In the project directory, you can run:
+このシステムは、以下の目的で開発されています：
 
-### `npm start`
+- 得意先情報の一元管理
+- 商品マスタの管理
+- 受発注業務の効率化
+- 請求書発行の自動化
+- 在庫管理の最適化
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+React（TypeScript）とNode.js（Express）を使用したフルスタックアプリケーションで、データベースにはSQLite3を採用しています。
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 実装済みの機能
 
-### `npm test`
+### 認証機能
+- ユーザー登録
+- ログイン/ログアウト
+- 認証保護されたルート
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### マスタメンテナンス機能
+- **税率マスタ**: 消費税率や計算方法の管理
+- **拠点マスタ**: 事業所や倉庫などの拠点情報の管理
+- **プルダウン項目マスタ**: システム内で使用する各種プルダウンリストの管理
+- **担当者マスタ**: 社内担当者情報の管理
+- **得意先マスタ**: 取引先企業の情報管理
+- **商品マスタ**: 取扱商品の情報管理（基本情報のみ）
+- **仕入先マスタ**: 仕入先企業の情報管理（基本情報のみ）
 
-### `npm run build`
+### データベース機能
+- SQLite3を使用したローカルデータベース
+- 日本時間（JST）でのタイムスタンプ管理
+- マスタデータの初期値設定
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 今後実装予定の機能
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 受注管理
+- 受注入力
+- 受注一覧
+- 受注検索
+- 受注状況管理
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 出荷管理
+- 出荷指示
+- 出荷実績登録
+- 納品書発行
 
-### `npm run eject`
+### 請求管理
+- 請求書発行
+- 請求履歴管理
+- 入金管理
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 入荷管理
+- 発注管理
+- 入荷実績登録
+- 仕入先別発注履歴
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 支払管理
+- 支払予定管理
+- 支払実績登録
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 在庫管理
+- 在庫照会
+- 在庫移動
+- 棚卸し機能
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 売上管理
+- 売上集計
+- 売上分析
+- レポート出力
 
-## Learn More
+### その他
+- システム設定
+- ユーザー権限管理
+- データバックアップ/リストア
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 起動方法
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 必要条件
+- Node.js 14.x以上
+- npm 6.x以上
+
+### インストール手順
+
+1. リポジトリをクローン
+```
+git clone https://github.com/SAS-Sasao/sales-manage.git
+cd sales-manage
+```
+
+2. 依存パッケージのインストール
+```
+npm install
+```
+
+3. データベースの初期化
+```
+npm run server:init
+```
+
+4. アプリケーションの起動
+```
+npm run dev
+```
+
+これにより、以下のURLでアプリケーションにアクセスできます：
+- フロントエンド: http://localhost:4321
+- バックエンドAPI: http://localhost:4322
+
+### 開発用コマンド
+
+- フロントエンドのみ起動: `npm start`
+- バックエンドのみ起動: `npm run server`
+- ビルド: `npm run build`
+
+## ライセンス
+
+このプロジェクトは社内利用を目的としており、無断での複製・配布・改変は禁止されています。
