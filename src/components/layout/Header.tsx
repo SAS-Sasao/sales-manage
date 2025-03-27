@@ -31,10 +31,10 @@ const Header: React.FC<HeaderProps> = ({ currentPage, parentPage }) => {
   };
 
   // 表示するタイトルを決定
-  // メニュー画面の場合は「ケミカル同仁基幹システム」を表示
+  // メニュー画面の場合は「KJ販売管理基幹システム」を表示
   // 個別画面の場合は画面名を表示
   const displayTitle = currentPage === 'メニュー' || !currentPage 
-    ? 'ケミカル同仁基幹システム' 
+    ? 'KJ販売管理基幹システム' 
     : currentPage;
 
   return (

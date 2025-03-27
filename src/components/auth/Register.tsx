@@ -53,7 +53,7 @@ const Register: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-indigo-700">ケミカル同仁基幹システム</h1>
+          <h1 className="text-3xl font-bold text-indigo-700">KJ販売管理基幹システム</h1>
         </div>
         
         <div className="bg-indigo-700 rounded-lg shadow-lg p-8">
